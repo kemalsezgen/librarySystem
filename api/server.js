@@ -56,6 +56,26 @@ app.delete("/delete/:id", (req, res) => {
   });
 });
 
+app.put("/lend/:id", async (req, res) => {
+  try {
+    await BookStore.findByIdAndUpdate(req.params.id, {
+      $inc:{quantity:-1}
+    })
+  } catch(err) {
+    console.log(err);
+  }
+})
+
+app.put("/back/:id", async (req, res) => {
+  try {
+    await BookStore.findByIdAndUpdate(req.params.id, {
+      $inc:{quantity:1}
+    })
+  } catch(err) {
+    console.log(err);
+  }
+})
+
 const PORT = 5000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
