@@ -5,6 +5,11 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min";
 import AddBook from "./components/AddBook";
 import Books from "./components/Books";
+import MusicCategory from "./components/MusicCategory";
+import HistoryCategory from "./components/HistoryCategory";
+import ReligiousCategory from "./components/ReligiousCategory";
+import TeachingCategory from "./components/TeachingCategory";
+
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 
 function App() {
@@ -57,13 +62,19 @@ function App() {
   };
 
   const lendBook = (id) => {
-    axios.put("/lend/" + id);
-    alert(`The book with id ${id} id lended`);
+    const tempBook = books.find((book) => book._id === id);
+    if (tempBook.quantity > 0){
+      axios.put("/lend/" + id);
+      alert(`The book with id ${id} id lended`);
+    } else {
+      alert(`Count of ${tempBook.bookName} is 0.`)
+    }
   };
 
   const backBook = (id) => {
     axios.put("/back/" + id);
-    alert(`The book with id ${id} id back`);
+    //alert(`The book with id ${id} id back`);
+    alert(`${books.find((book) => book._id === id).bookName} is back.`);
   };
 
   return (
@@ -101,63 +112,52 @@ function App() {
                   </Link>
                 </li>
                 <li className="nav-item dropdown">
-                  <a
+                  <Link
                     className="nav-link dropdown-toggle"
-                    href="#"
+                    to="/"
                     id="navbarDropdown"
                     role="button"
                     data-bs-toggle="dropdown"
                     aria-expanded="false"
                   >
                     Departments
-                  </a>
+                  </Link>
                   <ul
                     className="dropdown-menu"
                     aria-labelledby="navbarDropdown"
                   >
                     <li>
-                      <a className="dropdown-item" href="#">
+                      <Link className="dropdown-item" to="/history">
                         History
-                      </a>
+                      </Link>
                     </li>
                     <li>
                       <hr className="dropdown-divider" />
                     </li>
                     <li>
-                      <a className="dropdown-item" href="#">
+                      <Link className="dropdown-item" to="/religious">
                         Religious
-                      </a>
+                      </Link>
                     </li>
                     <li>
                       <hr className="dropdown-divider" />
                     </li>
                     <li>
-                      <a className="dropdown-item" href="#">
+                      <Link className="dropdown-item" to="/music">
                         Music
-                      </a>
+                      </Link>
                     </li>
                     <li>
                       <hr className="dropdown-divider" />
                     </li>
                     <li>
-                      <a className="dropdown-item" href="#">
+                      <Link className="dropdown-item" to="/studyteaching">
                         Study & Teaching
-                      </a>
+                      </Link>
                     </li>
                   </ul>
                 </li>
               </ul>
-              <form className="d-flex" role="search">
-                <input
-                  className="form-control me-2"
-                  type="search"
-                  placeholder="Search"
-                  aria-label="Search"
-                />
-                <button className="btn btn-outline-success" type="submit">
-                  Search
-                </button>
-              </form>
             </div>
           </div>
         </nav>
@@ -173,7 +173,7 @@ function App() {
                 backBook={backBook}
               />
             }
-          ></Route>
+          />
           <Route
             path="/addbook"
             element={
@@ -183,7 +183,47 @@ function App() {
                 addBook={addBook}
               />
             }
-          ></Route>
+          />
+          <Route
+            path="/music"
+            element={
+              <MusicCategory
+                books={books.filter((book) => {
+                  return book.department === "Music";
+                })}
+              />
+            }
+          />
+          <Route
+            path="/history"
+            element={
+              <HistoryCategory
+                books={books.filter((book) => {
+                  return book.department === "History";
+                })}
+              />
+            }
+          />
+          <Route
+            path="/religious"
+            element={
+              <ReligiousCategory
+                books={books.filter((book) => {
+                  return book.department === "Religious";
+                })}
+              />
+            }
+          />
+          <Route
+            path="/studyteaching"
+            element={
+              <TeachingCategory
+                books={books.filter((book) => {
+                  return book.department === "Study & Teaching";
+                })}
+              />
+            }
+          />
         </Routes>
       </Router>
     </div>
